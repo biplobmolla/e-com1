@@ -2,7 +2,9 @@
 
 import FormTitle from "@/components/FormTitle";
 import Input from "@/components/Input";
+import { useSigninMutation } from "@/services/api/authApi";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 interface FormValuePropsType {
   email: string;
@@ -10,6 +12,8 @@ interface FormValuePropsType {
 }
 
 const Page = () => {
+  const [signin, { isLoading: isSigninLoading }] = useSigninMutation();
+
   const [formValue, setFormValue] = useState<FormValuePropsType>({
     email: "",
     password: "",
@@ -22,9 +26,19 @@ const Page = () => {
     }));
   };
 
+  const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const responseData = await signin(formValue).unwrap();
+      toast.success(responseData?.message);
+    } catch (error: any) {
+      toast.error(error?.data?.message);
+    }
+  };
+
   return (
     <div className="p-6">
-      <form>
+      <form onSubmit={handleOnSubmit}>
         <FormTitle text="Signin Form" className="mb-5" />
 
         <Input

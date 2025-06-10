@@ -1,14 +1,25 @@
 // lib/redux/apiSlice.ts
-import { type SignupReturnPropsType, type SignupPropsType } from "@/types/auth";
+import {
+  SigninPropsType,
+  type APIResponsePropsType,
+  type SignupPropsType,
+} from "@/types/auth";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const authApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api" }),
   endpoints: (builder) => ({
-    signup: builder.mutation<SignupReturnPropsType, SignupPropsType>({
+    signup: builder.mutation<APIResponsePropsType, SignupPropsType>({
       query: (data) => ({
         url: "/auth/signup",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    signin: builder.mutation<APIResponsePropsType, SigninPropsType>({
+      query: (data) => ({
+        url: "/auth/signin",
         method: "POST",
         body: data,
       }),
@@ -16,4 +27,4 @@ export const authApi = createApi({
   }),
 });
 
-export const { useSignupMutation } = authApi;
+export const { useSignupMutation, useSigninMutation } = authApi;

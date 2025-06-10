@@ -4,8 +4,12 @@ export interface SignupPropsType {
   phone: string;
   password: string;
 }
+export interface SigninPropsType {
+  email: string;
+  password: string;
+}
 
-export interface SignupReturnPropsType {
+export interface APIResponsePropsType {
   status: number;
   message: string;
   data: any;

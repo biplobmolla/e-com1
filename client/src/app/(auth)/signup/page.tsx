@@ -3,6 +3,7 @@
 import FormTitle from "@/components/FormTitle";
 import Input from "@/components/Input";
 import { useSignupMutation } from "@/services/api/authApi";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -16,6 +17,8 @@ interface FormValuePropsType {
 
 const Page = () => {
   const [signup, { isLoading: isSignupLoading }] = useSignupMutation();
+
+  const router = useRouter();
 
   const [formValue, setFormValue] = useState<FormValuePropsType>({
     name: "",
@@ -44,13 +47,17 @@ const Page = () => {
       ) {
         if (formValue.password === formValue.cpassword) {
           const { cpassword, ...data } = formValue;
-          const responseData = await signup(data);
-          toast.success(responseData?.data?.message);
+          const responseData = await signup(data).unwrap();
+          toast.success(responseData?.message);
+          router.push("/signin");
+        } else {
+          toast.error("Passwords do not match!");
         }
+      } else {
+        toast.error("Please fill in all fields.");
       }
-    } catch (error) {
-      console.log("error: ", error);
-      toast.error("Something went wrong!");
+    } catch (error: any) {
+      toast.error(error?.data?.message);
     }
   };
 
