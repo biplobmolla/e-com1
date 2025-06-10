@@ -2,7 +2,9 @@
 
 import FormTitle from "@/components/FormTitle";
 import Input from "@/components/Input";
-import { useState } from "react";
+import { useSignupMutation } from "@/services/api/authApi";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface FormValuePropsType {
   name: string;
@@ -13,6 +15,8 @@ interface FormValuePropsType {
 }
 
 const Page = () => {
+  const [signup, { isLoading: isSignupLoading }] = useSignupMutation();
+
   const [formValue, setFormValue] = useState<FormValuePropsType>({
     name: "",
     email: "",
@@ -28,9 +32,31 @@ const Page = () => {
     }));
   };
 
+  const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (
+        formValue.name &&
+        formValue.email &&
+        formValue.phone &&
+        formValue.password &&
+        formValue.cpassword
+      ) {
+        if (formValue.password === formValue.cpassword) {
+          const { cpassword, ...data } = formValue;
+          const responseData = await signup(data);
+          toast.success(responseData?.data?.message);
+        }
+      }
+    } catch (error) {
+      console.log("error: ", error);
+      toast.error("Something went wrong!");
+    }
+  };
+
   return (
     <div className="p-6">
-      <form>
+      <form onSubmit={handleOnSubmit}>
         <FormTitle text="Signup Form" className="mb-5" />
 
         <Input
