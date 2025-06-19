@@ -1,6 +1,7 @@
 /client/node_modules
 /client/.next
 /client/.env
+/client/.env.*
 /client/out
 /client/build
 

@@ -2,8 +2,13 @@
 
 import FormTitle from "@/components/FormTitle";
 import Input from "@/components/Input";
-import { useSigninMutation } from "@/services/api/authApi";
+import {
+  useSigninMutation,
+  useTokenVerifyMutation,
+} from "@/services/api/authApi";
+import { clearUser, setUser } from "@/services/slices/userSlice";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
 interface FormValuePropsType {
@@ -13,6 +18,10 @@ interface FormValuePropsType {
 
 const Page = () => {
   const [signin, { isLoading: isSigninLoading }] = useSigninMutation();
+  const [tokenVerify, { isLoading: isTokenVerifyLoading }] =
+    useTokenVerifyMutation();
+
+  const dispatch = useDispatch();
 
   const [formValue, setFormValue] = useState<FormValuePropsType>({
     email: "",
@@ -30,6 +39,9 @@ const Page = () => {
     e.preventDefault();
     try {
       const responseData = await signin(formValue).unwrap();
+      const user = await tokenVerify(responseData?.token);
+      console.log("user: ", user?.data?.data?.user);
+      console.log(dispatch(setUser(user?.data?.data?.user)));
       toast.success(responseData?.message);
     } catch (error: any) {
       toast.error(error?.data?.message);

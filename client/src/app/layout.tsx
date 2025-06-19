@@ -1,8 +1,8 @@
-import ReduxProvider from "@/services/ReduxProvider";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
+import ReduxProvider from "./ReduxProvider";
 
-export default function AuthLayout({
+export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -10,8 +10,10 @@ export default function AuthLayout({
   return (
     <html lang="en">
       <body>
-        <ReduxProvider>{children}</ReduxProvider>
-        <ToastContainer />
+        <ReduxProvider>
+          {children}
+          <ToastContainer />
+        </ReduxProvider>
       </body>
     </html>
   );

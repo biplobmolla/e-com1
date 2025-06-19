@@ -12,5 +12,5 @@ export interface SigninPropsType {
 export interface APIResponsePropsType {
   status: number;
   message: string;
-  data: any;
+  token: any;
 }
